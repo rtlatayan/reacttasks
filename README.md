@@ -30,8 +30,8 @@
 - Tutorial https://www.youtube.com/watch?v=XuFDcZABiDQ
 
 ## Material UI
-https://material-ui.com/
-https://www.youtube.com/watch?v=vyJU9efvUtQ
+- https://material-ui.com/
+- https://www.youtube.com/watch?v=vyJU9efvUtQ
 
 ### Installation
 - npm install @material-ui/core
