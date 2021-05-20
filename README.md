@@ -7,6 +7,7 @@
   - [Run](#tt-run)
 - [Login](#login)
 - [Expense Trakcer](#expense-tracker)
+- [Material UI](#material-ui)
 
 ## Task Tracker
 - Crash Tutorial https://www.youtube.com/watch?v=w7ejDZ8SWv8
@@ -27,3 +28,10 @@
 
 ## Expense Tracker
 - Tutorial https://www.youtube.com/watch?v=XuFDcZABiDQ
+
+## Material UI
+https://material-ui.com/
+https://www.youtube.com/watch?v=vyJU9efvUtQ
+
+### Installation
+- npm install @material-ui/core
