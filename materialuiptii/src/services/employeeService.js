@@ -41,5 +41,15 @@ export const getDepartmentCollection = () => ([
     if(localStorage.getItem(KEYS.employees) == null)
         localStorage.setItem(KEYS.employees, JSON.stringify([]))
 
-    return JSON.parse(localStorage.getItem(KEYS.employees))
+    let employees = JSON.parse(localStorage.getItem(KEYS.employees))
+
+    //Map DeptID to DeptTitle
+    let departments = getDepartmentCollection()
+    // console.log('departments', departments)
+    // console.log('employees.emp', employees)
+
+    return employees.map(emp => ({
+        ...emp,
+         department: departments[emp.departmentId-1].title
+    }))
  }

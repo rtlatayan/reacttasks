@@ -1,8 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import PageHeader from '../../components/PageHeader'
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline'
 import EmployeeForm from './EmployeeForm'
-import { makeStyles, Paper } from '@material-ui/core'
+import { makeStyles, Paper, TableBody, TableCell, TableRow } from '@material-ui/core'
+import useTable from '../../components/useTable'
+import * as employeeService from '../../services/employeeService'
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
@@ -11,8 +13,24 @@ const useStyles = makeStyles(theme => ({
     }
 })) 
 
+const headCells = [
+    {id: 'fullname', label: 'Employee Name'},
+    {id: 'email', label: 'Email Address'},
+    {id: 'mobile', label: 'Mobile Number'},
+    {id: 'department', label: 'Department'}
+]
+
 const Employees = () => {
     const classes = useStyles();
+    const [records, setRecords] = useState(employeeService.getAllEmployees())
+    const {
+        TblContainer,
+        TblHead,
+        TblPagination,
+        recordsPageUpdate
+    } = useTable(records, headCells)
+
+    // console.log('recordsPageUpdate', recordsPageUpdate())
 
     return (
         <>
@@ -22,7 +40,21 @@ const Employees = () => {
                 icon={<PeopleOutlineIcon fontSize='large' />}
             /> 
             <Paper className={classes.pageContent}>
-                <EmployeeForm />
+                {/* <EmployeeForm /> */}
+                <TblContainer>
+                    <TblHead />
+                    <TableBody>
+                        {records && recordsPageUpdate().map(rec => (
+                            <TableRow key={rec.id}>
+                                <TableCell>{rec.fullname}</TableCell>
+                                <TableCell>{rec.email}</TableCell>
+                                <TableCell>{rec.mobile}</TableCell>
+                                <TableCell>{rec.department}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </TblContainer>
+                <TblPagination/>
             </Paper>
         </>
     )
