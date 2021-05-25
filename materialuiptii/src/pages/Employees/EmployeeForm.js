@@ -17,21 +17,51 @@ const genderItems = [
 
 const initFieldValues = {
     id: 0,
-    fullname: 'Rota Bells',
-    email: 'rota@gmail.com',
-    mobile: '09171231234',
-    city: 'San Pablo',
-    gender: 'female',
-    departmentId: 1,
+    fullname: '',
+    email: '',
+    mobile: '',
+    city: '',
+    gender: 'male',
+    departmentId: '',
     hideDate: new Date(),
     isPermanent: false
 }
 
 const EmployeeForm = () => {
-    const {values, handleInputChange} = useForm(initFieldValues);
+
+    const validateFn = (fieldValues = values) => {
+        let temp = {...errors}
+        let requiredText = 'This field is required.'
+
+        if('fullname' in fieldValues)
+            temp.fullname = fieldValues.fullname ? '' : requiredText
+        if('email' in fieldValues)
+            temp.email = (/$^|.+@.+..+/).test(fieldValues.email) ? '' : 'Invalid email.'
+        if('mobile' in fieldValues)
+            temp.mobile = fieldValues.mobile.length > 9 ? '' : 'Invalid mobile.' 
+        if('departmentId' in fieldValues)
+            temp.departmentId = fieldValues.departmentId.length !== 0 ? '' : requiredText
+        
+        setErrors({...temp})
+
+        if(fieldValues === values)
+            return Object.values(temp).every(x => x === '')
+    }
+
+    const {values, handleInputChange, errors, setErrors, resetFormFn } = useForm(initFieldValues, true, validateFn); 
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        if(validateFn()) {
+            ServiceEmployee.addEmployee(values)
+            resetFormFn()
+        }
+
+
+    }
 
     return (
-        <Form>
+        <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item xs={6}>
                     <Controls.Input
@@ -39,12 +69,14 @@ const EmployeeForm = () => {
                         name='fullname'
                         value={values.fullname}
                         onChange={handleInputChange}
+                        error={errors.fullname}
                     />
                     <Controls.Input
                         label='Email'
                         name='email'
                         value={values.email}
                         onChange={handleInputChange}
+                        error={errors.email}
                     />
                     <Controls.Input
                         label='City'
@@ -57,6 +89,7 @@ const EmployeeForm = () => {
                         name='mobile'
                         value={values.mobile}
                         onChange={handleInputChange}
+                        error={errors.mobile}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -73,6 +106,7 @@ const EmployeeForm = () => {
                         value={values.departmentId}
                         onChange={handleInputChange}
                         options={ServiceEmployee.getDepartmentCollection()}
+                        error={errors.departmentId}
                     />
                     <Controls.DatePicker
                         name='hireDate'
@@ -90,8 +124,9 @@ const EmployeeForm = () => {
                         <Controls.Button
                             variant='outlined'
                             size='large'
-                            text='Cancel'
+                            text='Reset'
                             color='default'
+                            onClick={resetFormFn}
                         />
                         <Controls.Button text='Save' type='submit' />
                     </div>

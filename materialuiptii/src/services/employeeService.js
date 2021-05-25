@@ -1,3 +1,8 @@
+const KEYS = {
+    employees: 'employees',
+    employeeId: 'employeeId'
+}
+
 export const getDepartmentCollection = () => ([
     {
         id: 1,
@@ -16,3 +21,25 @@ export const getDepartmentCollection = () => ([
         title: 'HR'
     }
 ])
+
+ export const addEmployee = (data) => {
+    let employees = getAllEmployees()
+    data['id'] = generateEmployeeID()
+    employees.push(data)
+    localStorage.setItem(KEYS.employees, JSON.stringify(employees))
+ }
+
+ export const generateEmployeeID = () => {
+    if(localStorage.getItem(KEYS.employeeId) == null)
+        localStorage.setItem(KEYS.employeeId, '0')
+    var id = parseInt(localStorage.getItem(KEYS.employeeId))
+    localStorage.setItem(KEYS.employeeId, (++ id).toString())
+    return id;
+ }
+ 
+ export const getAllEmployees = () => {
+    if(localStorage.getItem(KEYS.employees) == null)
+        localStorage.setItem(KEYS.employees, JSON.stringify([]))
+
+    return JSON.parse(localStorage.getItem(KEYS.employees))
+ }
