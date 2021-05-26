@@ -4,11 +4,13 @@ import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline'
 import EmployeeForm from './EmployeeForm'
 import { InputAdornment, makeStyles, Paper, TableBody, TableCell, TableRow, Toolbar } from '@material-ui/core'
 import useTable from '../../components/useTable'
-import * as employeeService from '../../services/employeeService'
+import * as ServiceEmployee from '../../services/employeeService'
 import {Controls} from '../../components/controls/Controls'
 import {Search} from '@material-ui/icons/'
 import AddIcon from '@material-ui/icons/Add'
 import Popup from '../../components/Popup'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
@@ -28,14 +30,16 @@ const headCells = [
     {id: 'fullname', label: 'Employee Name'},
     {id: 'email', label: 'Email Address'},
     {id: 'mobile', label: 'Mobile Number'},
-    {id: 'department', label: 'Department', disableSorting:true}
+    {id: 'department', label: 'Department', disableSorting:true},
+    {id: 'actions', label: 'Actions', disableSorting:true}
 ]
 
 const Employees = () => {
     const classes = useStyles();
-    const [records, setRecords] = useState(employeeService.getAllEmployees())
+    const [records, setRecords] = useState(ServiceEmployee.getAllEmployees())
     const [filterFn, setFilterFn] = useState({fn:items => {return items}})
     const [openPopup, setOpenPopup] = useState(false)
+    const [recForEdit, setRecForEdit] = useState(null)
 
     const {
         TblContainer,
@@ -57,6 +61,23 @@ const Employees = () => {
                 }
             }
         })
+    }
+
+    const addOrEdit = (emp, resetFormFn) => {
+        if(emp.id === 0) {
+            ServiceEmployee.addEmployee(emp)
+        } else {
+            ServiceEmployee.updateEmployee(emp)
+        }
+        setRecForEdit(null)
+        resetFormFn()
+        setOpenPopup(false)
+        setRecords(ServiceEmployee.getAllEmployees())
+    }
+
+    const openInPopUp = (item) => {
+        setRecForEdit(item)
+        setOpenPopup(true)
     }
 
     return (
@@ -84,7 +105,10 @@ const Employees = () => {
                         variant='outlined'
                         label=''
                         startIcon={<AddIcon />}
-                        onClick={(e) => setOpenPopup(true)}
+                        onClick={(e) => {
+                            setOpenPopup(true)
+                            setRecForEdit(null)
+                        }}
                     />
                 </Toolbar>
                 <TblContainer>
@@ -96,6 +120,17 @@ const Employees = () => {
                                 <TableCell>{rec.email}</TableCell>
                                 <TableCell>{rec.mobile}</TableCell>
                                 <TableCell>{rec.department}</TableCell>
+                                <TableCell>
+                                    <Controls.ActionBtn color='primary'>
+                                        <EditIcon
+                                            fontSize='small'
+                                            onClick={(e)=>{openInPopUp(rec)}}
+                                        />
+                                    </Controls.ActionBtn>
+                                    <Controls.ActionBtn color='secondary'>
+                                        <DeleteIcon fontSize='small' />
+                                    </Controls.ActionBtn>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -107,7 +142,10 @@ const Employees = () => {
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
             >
-                <EmployeeForm />
+                <EmployeeForm
+                    recForEdit={recForEdit}
+                    addOrEdit={addOrEdit}
+                />
             </Popup>
         </>
     )

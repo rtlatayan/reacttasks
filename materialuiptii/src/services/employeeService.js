@@ -29,6 +29,13 @@ export const getDepartmentCollection = () => ([
     localStorage.setItem(KEYS.employees, JSON.stringify(employees))
  }
 
+ export const updateEmployee = (data) => {
+    let employees = getAllEmployees()
+    let recIndex = employees.findIndex(x=>x.id===data.id)
+    employees[recIndex]={...data}
+    localStorage.setItem(KEYS.employees, JSON.stringify(employees))
+ }
+
  export const generateEmployeeID = () => {
     if(localStorage.getItem(KEYS.employeeId) == null)
         localStorage.setItem(KEYS.employeeId, '0')
