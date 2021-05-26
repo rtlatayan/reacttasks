@@ -7,6 +7,8 @@ import useTable from '../../components/useTable'
 import * as employeeService from '../../services/employeeService'
 import {Controls} from '../../components/controls/Controls'
 import {Search} from '@material-ui/icons/'
+import AddIcon from '@material-ui/icons/Add'
+import Popup from '../../components/Popup'
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
@@ -15,6 +17,10 @@ const useStyles = makeStyles(theme => ({
     },
     searchInput: {
         width: '75%'
+    },
+    newButton: {
+        position: 'absolute',
+        right: 10
     }
 })) 
 
@@ -29,6 +35,8 @@ const Employees = () => {
     const classes = useStyles();
     const [records, setRecords] = useState(employeeService.getAllEmployees())
     const [filterFn, setFilterFn] = useState({fn:items => {return items}})
+    const [openPopup, setOpenPopup] = useState(false)
+
     const {
         TblContainer,
         TblHead,
@@ -59,7 +67,6 @@ const Employees = () => {
                 icon={<PeopleOutlineIcon fontSize='large' />}
             /> 
             <Paper className={classes.pageContent}>
-                {/* <EmployeeForm /> */}
                 <Toolbar>
                     <Controls.Input
                         className={classes.searchInput}
@@ -70,6 +77,14 @@ const Employees = () => {
                             </InputAdornment>)
                         }}
                         onChange={handleSearch}
+                    />
+                    <Controls.Button
+                        className={classes.newButton}
+                        text='Add Employee'
+                        variant='outlined'
+                        label=''
+                        startIcon={<AddIcon />}
+                        onClick={(e) => setOpenPopup(true)}
                     />
                 </Toolbar>
                 <TblContainer>
@@ -87,6 +102,13 @@ const Employees = () => {
                 </TblContainer>
                 <TblPagination/>
             </Paper>
+            <Popup
+                title='Employee Form'
+                openPopup={openPopup}
+                setOpenPopup={setOpenPopup}
+            >
+                <EmployeeForm />
+            </Popup>
         </>
     )
 }
