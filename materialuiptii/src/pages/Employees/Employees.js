@@ -11,6 +11,7 @@ import AddIcon from '@material-ui/icons/Add'
 import Popup from '../../components/Popup'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
+import Notifications from '../../components/Notifications'
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
@@ -40,6 +41,7 @@ const Employees = () => {
     const [filterFn, setFilterFn] = useState({fn:items => {return items}})
     const [openPopup, setOpenPopup] = useState(false)
     const [recForEdit, setRecForEdit] = useState(null)
+    const [notify, setNotify] = useState({isOpen: false, message: '', type: ''}) 
 
     const {
         TblContainer,
@@ -73,6 +75,11 @@ const Employees = () => {
         resetFormFn()
         setOpenPopup(false)
         setRecords(ServiceEmployee.getAllEmployees())
+        setNotify({
+            isOpen: true,
+            message: 'Success.',
+            type: 'success'
+        })
     }
 
     const openInPopUp = (item) => {
@@ -147,6 +154,10 @@ const Employees = () => {
                     addOrEdit={addOrEdit}
                 />
             </Popup>
+            <Notifications
+                notify={notify}
+                setNotify={setNotify}
+            />
         </>
     )
 }
