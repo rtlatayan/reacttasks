@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function useTable(records, headCells) {
+export default function useTable(records, headCells, filterFn) {
     const classses = useStyles();
 
     const TblContainer = (props) => (
@@ -95,7 +95,7 @@ export default function useTable(records, headCells) {
     }
 
     const recordsPageUpdate = () => {
-        return sortFn(records, getComparatorFn(order, orderBy)).slice(page*rowsPerPage, (page+1)*rowsPerPage)
+        return sortFn(filterFn.fn(records), getComparatorFn(order, orderBy)).slice(page*rowsPerPage, (page+1)*rowsPerPage)
     }
     
     const TblPagination = () => (<TablePagination
