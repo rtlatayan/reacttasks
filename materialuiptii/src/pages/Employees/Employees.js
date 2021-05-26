@@ -12,6 +12,7 @@ import Popup from '../../components/Popup'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Notifications from '../../components/Notifications'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
@@ -42,6 +43,7 @@ const Employees = () => {
     const [openPopup, setOpenPopup] = useState(false)
     const [recForEdit, setRecForEdit] = useState(null)
     const [notify, setNotify] = useState({isOpen: false, message: '', type: ''}) 
+    const [confirmDialog, setConfirmDialog] = useState({isOpen: false, title: '', subtitle: ''})
 
     const {
         TblContainer,
@@ -85,6 +87,20 @@ const Employees = () => {
     const openInPopUp = (item) => {
         setRecForEdit(item)
         setOpenPopup(true)
+    }
+
+    const onDelete = (id) => {
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+        })
+        ServiceEmployee.deleteEmployee(id)
+        setRecords(ServiceEmployee.getAllEmployees())
+        setNotify({
+            isOpen: true,
+            message: 'Deleted Succesfully.',
+            type: 'error'
+        })
     }
 
     return (
@@ -134,7 +150,16 @@ const Employees = () => {
                                             onClick={(e)=>{openInPopUp(rec)}}
                                         />
                                     </Controls.ActionBtn>
-                                    <Controls.ActionBtn color='secondary'>
+                                    <Controls.ActionBtn
+                                        onClick={()=>{
+                                            setConfirmDialog({
+                                                isOpen: true,
+                                                title: 'Are you sure you want to delete this record?',
+                                                subtitle: 'Cannot be undone.',
+                                                onConfirm: () => {onDelete(rec.id)}
+                                            })
+                                        }}
+                                        color='secondary'>
                                         <DeleteIcon fontSize='small' />
                                     </Controls.ActionBtn>
                                 </TableCell>
@@ -157,6 +182,10 @@ const Employees = () => {
             <Notifications
                 notify={notify}
                 setNotify={setNotify}
+            />
+            <ConfirmDialog
+                confirmDialog={confirmDialog}
+                setConfirmDialog={setConfirmDialog}
             />
         </>
     )

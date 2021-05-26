@@ -43,6 +43,12 @@ export const getDepartmentCollection = () => ([
     localStorage.setItem(KEYS.employeeId, (++ id).toString())
     return id;
  }
+
+ export const deleteEmployee = (id) => {
+    let employees = getAllEmployees()
+    employees = employees.filter(x=>x.id !== id)
+    localStorage.setItem(KEYS.employees, JSON.stringify(employees))
+ }
  
  export const getAllEmployees = () => {
     if(localStorage.getItem(KEYS.employees) == null)
